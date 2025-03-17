@@ -2,6 +2,7 @@ package jobhunter.service;
 
 import jobhunter.domain.User;
 import jobhunter.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +11,11 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User handleCreateUser(User user) {
@@ -43,6 +47,10 @@ public class UserService {
             this.userRepository.save(updateUser);
         }
         return updateUser;
+    }
+
+    public User handleGetUserByEmail(String email) {
+        return this.userRepository.findUserByEmail(email);
     }
 
 }
