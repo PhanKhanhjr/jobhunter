@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 
 
-@Component("userDetailsService")
-//dat ten bean nhu the nay de ghi de.
+@Component("userDetailsService") //dat ten bean nhu the nay de ghi de.
+
 public class UserDetailCustom implements UserDetailsService {
     private final UserService userService;
     public UserDetailCustom(UserService userService) {
