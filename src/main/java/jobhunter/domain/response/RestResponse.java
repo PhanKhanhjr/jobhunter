@@ -1,4 +1,4 @@
-package jobhunter.domain;
+package jobhunter.domain.response;
 
 public class RestResponse<T> {
     private int statusCode;

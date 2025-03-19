@@ -2,7 +2,7 @@ package jobhunter.util;
 
 
 import jakarta.servlet.http.HttpServletResponse;
-import jobhunter.domain.RestResponse;
+import jobhunter.domain.response.RestResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
