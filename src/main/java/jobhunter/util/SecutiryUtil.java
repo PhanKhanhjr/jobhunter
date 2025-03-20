@@ -32,8 +32,6 @@ public class SecutiryUtil {
     public String createToken(Authentication authentication) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
-
-
         // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
