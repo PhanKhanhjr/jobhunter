@@ -1,5 +1,6 @@
 package jobhunter.util.error;
 
+import jakarta.persistence.EntityNotFoundException;
 import jobhunter.domain.response.RestResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +49,14 @@ public class GlobalException {
         res.setError(e.getMessage());
         res.setMessage("BadCredentialsException");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleEntityNotFoundException(EntityNotFoundException e) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
+        res.setError(e.getMessage());
+        res.setMessage("Copany not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
     }
 }
