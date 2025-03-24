@@ -1,14 +1,17 @@
 package jobhunter.controller;
 
 import jakarta.validation.Valid;
+import jobhunter.DTO.ResutlPaginationDTO;
 import jobhunter.domain.Company;
 import jobhunter.service.CompanyService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class CompanyController {
@@ -26,9 +29,12 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<List<Company>> getAllCompanies() {
-        List<Company> cpnList = this.companyService.getAllCompanies();
-        return ResponseEntity.status(HttpStatus.OK).body(cpnList);
+    public ResponseEntity<ResutlPaginationDTO> fetchCompanies(@RequestParam("current") Optional<String> currentOptional,
+                                                              @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+        String currentPage =currentOptional.orElse("");
+        String pageSize =pageSizeOptional.orElse("");
+        Pageable pageable = PageRequest.of(Integer.parseInt(currentPage), Integer.parseInt(pageSize));
+        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.fetchAllCompanies(pageable));
     }
 
     @GetMapping("/companies/{id}")
@@ -44,5 +50,11 @@ public class CompanyController {
         }
         this.companyService.deleteCompanyById(id);
         return ResponseEntity.status(HttpStatus.OK).body("Company deleted");
+    }
+
+    @PutMapping("/companies")
+    public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company company) {
+        Company updateCompany = this.companyService.handleUpdateCompany(company);
+        return ResponseEntity.ok(updateCompany);
     }
 }

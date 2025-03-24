@@ -1,14 +1,18 @@
 package jobhunter.controller;
 
+import jobhunter.DTO.ResutlPaginationDTO;
 import jobhunter.domain.User;
 import jobhunter.service.UserService;
 import jobhunter.util.error.IdInvalidException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -45,8 +49,12 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public  ResponseEntity<List<User>> getAllUsers(){
-        return ResponseEntity.ok(this.userService.fetchAllUser());
+    public  ResponseEntity<ResutlPaginationDTO> getAllUsers(@RequestParam("current") Optional<String> currentOptional,
+                                                            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+        String currentPage =currentOptional.orElse("");
+        String pageSize =pageSizeOptional.orElse("");
+        Pageable pageable = PageRequest.of(Integer.parseInt(currentPage) -1, Integer.parseInt(pageSize));
+        return ResponseEntity.ok(this.userService.fetchAllUser(pageable));
     }
 
     @PutMapping("/users")

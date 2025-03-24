@@ -1,9 +1,15 @@
 package jobhunter.service;
 
+import jobhunter.DTO.Meta;
+import jobhunter.DTO.ResutlPaginationDTO;
 import jobhunter.domain.User;
 import jobhunter.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +39,17 @@ public class UserService {
         }
         return null;
     }
-    public List<User> fetchAllUser(){
-        return this.userRepository.findAll();
+    public ResutlPaginationDTO fetchAllUser(Pageable pageable) {
+       Page<User> users = this.userRepository.findAll(pageable);
+       ResutlPaginationDTO paginationDTO = new ResutlPaginationDTO();
+       Meta meta = new Meta();
+       meta.setPage(users.getNumber());
+       meta.setPageSize(users.getSize());
+       meta.setPages(users.getTotalPages());
+       meta.setTotal(users.getTotalElements());
+       paginationDTO.setMeta(meta);
+       paginationDTO.setResult(users.getContent());
+        return paginationDTO;
     }
 
     public User handleUpdateUser(User user) {

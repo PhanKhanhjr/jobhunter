@@ -103,6 +103,12 @@ public class Company {
     @PrePersist
     public void beforeCreate() {
         this.createdAt = Instant.now();
-        this.createdBy = SecutiryUtil.getCurrentUserLogin().isPresent() ==true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        this.createdBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updatedBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        this.updatedAt = Instant.now();
     }
 }
