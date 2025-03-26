@@ -3,6 +3,7 @@ package jobhunter.util;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jobhunter.domain.response.RestResponse;
+import jobhunter.util.anotation.ApiMessage;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -40,7 +41,8 @@ public class FormatRestResponse implements ResponseBodyAdvice {
             restResponse.setMessage(body);
         }else {
             restResponse.setData(body);
-            restResponse.setMessage("Success");
+            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+            restResponse.setMessage(message != null ? message.value() : "Call api success");
         }
         return restResponse;
     }

@@ -1,11 +1,14 @@
 package jobhunter.controller;
 
+import com.turkraft.springfilter.boot.Filter;
 import jobhunter.DTO.ResutlPaginationDTO;
 import jobhunter.domain.User;
 import jobhunter.service.UserService;
+import jobhunter.util.anotation.ApiMessage;
 import jobhunter.util.error.IdInvalidException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
+@RequestMapping("/api/v1")
 @RestController
 public class UserController {
     private final UserService userService;
@@ -24,6 +27,7 @@ public class UserController {
     }
     
     @PostMapping("/users")
+    @ApiMessage("Create user success")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         // ma hoa mat khau
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -49,15 +53,20 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public  ResponseEntity<ResutlPaginationDTO> getAllUsers(@RequestParam("current") Optional<String> currentOptional,
-                                                            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
-        String currentPage =currentOptional.orElse("");
-        String pageSize =pageSizeOptional.orElse("");
-        Pageable pageable = PageRequest.of(Integer.parseInt(currentPage) -1, Integer.parseInt(pageSize));
-        return ResponseEntity.ok(this.userService.fetchAllUser(pageable));
+    @ApiMessage("Get user success")
+    public  ResponseEntity<ResutlPaginationDTO> getAllUsers(
+//            @RequestParam("current") Optional<String> currentOptional,
+//            @RequestParam("pageSize") Optional<String> pageSizeOptional
+            @Filter Specification<User> spec, Pageable pageable
+            ) {
+//        String currentPage =currentOptional.orElse("");
+//        String pageSize =pageSizeOptional.orElse("");
+//        Pageable pageable = PageRequest.of(Integer.parseInt(currentPage) -1, Integer.parseInt(pageSize));
+        return ResponseEntity.ok(this.userService.fetchAllUser(spec, pageable));
     }
 
     @PutMapping("/users")
+    @ApiMessage("Information has been updated")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.handleUpdateUser(user));
     }

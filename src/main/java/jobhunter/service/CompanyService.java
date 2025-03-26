@@ -7,11 +7,8 @@ import jobhunter.domain.Company;
 import jobhunter.repository.CompanyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,14 +22,15 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public ResutlPaginationDTO fetchAllCompanies(Pageable pageable) {
-        Page<Company> companies =this.companyRepository.findAll(pageable);
+    public ResutlPaginationDTO fetchAllCompanies(Specification<Company> spec,Pageable pageable) {
+        Page<Company> companies =this.companyRepository.findAll(spec,pageable);
         ResutlPaginationDTO resutlPaginationDTO = new ResutlPaginationDTO();
         Meta meta = new Meta();
-        meta.setPage(companies.getNumber());
+        meta.setPage(pageable.getPageNumber()+1);
+        meta.setPageSize(pageable.getPageSize());
         meta.setPages(companies.getTotalPages());
         meta.setTotal(companies.getTotalElements());
-        meta.setPageSize(companies.getNumberOfElements());
+
         resutlPaginationDTO.setMeta(meta);
         resutlPaginationDTO.setResult(companies.getContent());
         return resutlPaginationDTO;

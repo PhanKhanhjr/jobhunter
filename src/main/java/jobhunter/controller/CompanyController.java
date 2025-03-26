@@ -1,20 +1,20 @@
 package jobhunter.controller;
 
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import jobhunter.DTO.ResutlPaginationDTO;
 import jobhunter.domain.Company;
 import jobhunter.service.CompanyService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Optional;
-
+@RequestMapping("/api/v1")
 @RestController
-public class CompanyController {
+public class  CompanyController {
 
     private CompanyService companyService;
 
@@ -29,12 +29,15 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<ResutlPaginationDTO> fetchCompanies(@RequestParam("current") Optional<String> currentOptional,
-                                                              @RequestParam("pageSize") Optional<String> pageSizeOptional) {
-        String currentPage =currentOptional.orElse("");
-        String pageSize =pageSizeOptional.orElse("");
-        Pageable pageable = PageRequest.of(Integer.parseInt(currentPage), Integer.parseInt(pageSize));
-        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.fetchAllCompanies(pageable));
+    public ResponseEntity<ResutlPaginationDTO> fetchCompanies(
+//            @RequestParam("current") Optional<String> currentOptional,
+//            @RequestParam("pageSize") Optional<String> pageSizeOptional
+            @Filter Specification<Company> spec, Pageable pageable)
+    {
+//        String currentPage =currentOptional.orElse("");
+//        String pageSize =pageSizeOptional.orElse("");
+//        Pageable pageable = PageRequest.of(Integer.parseInt(currentPage), Integer.parseInt(pageSize));
+        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.fetchAllCompanies(spec,pageable));
     }
 
     @GetMapping("/companies/{id}")
