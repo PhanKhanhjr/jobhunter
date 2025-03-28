@@ -105,7 +105,7 @@ public class Company {
         this.createdAt = Instant.now();
         this.createdBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
     }
-
+    
     @PreUpdate
     public void handleBeforeUpdate() {
         this.updatedBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";

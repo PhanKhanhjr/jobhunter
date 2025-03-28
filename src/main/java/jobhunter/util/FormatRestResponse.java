@@ -4,6 +4,7 @@ package jobhunter.util;
 import jakarta.servlet.http.HttpServletResponse;
 import jobhunter.domain.response.RestResponse;
 import jobhunter.util.anotation.ApiMessage;
+import jobhunter.util.error.EmailAlreadyExistsException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -37,8 +38,7 @@ public class FormatRestResponse implements ResponseBodyAdvice {
             return body;
         }
         if (status >= 400){
-            restResponse.setError("Failed");
-            restResponse.setMessage(body);
+       return body;
         }else {
             restResponse.setData(body);
             ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);

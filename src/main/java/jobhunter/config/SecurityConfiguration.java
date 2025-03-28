@@ -41,7 +41,7 @@ public class SecurityConfiguration {
                 .csrf(c ->c.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/home","/login").permitAll() // Cho phép truy cập không cần đăng nhập
+                        .requestMatchers("/", "/home","/api/v1/login").permitAll() // Cho phép truy cập không cần đăng nhập
                         .anyRequest().authenticated()
 //                                .anyRequest().permitAll()
                 )

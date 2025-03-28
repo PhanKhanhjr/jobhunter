@@ -1,12 +1,14 @@
 package jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
 import jobhunter.DTO.ResutlPaginationDTO;
+import jobhunter.DTO.UserCreateDTO;
+import jobhunter.DTO.UserUpdateDTO;
 import jobhunter.domain.User;
 import jobhunter.service.UserService;
 import jobhunter.util.anotation.ApiMessage;
 import jobhunter.util.error.IdInvalidException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -14,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 @RequestMapping("/api/v1")
 @RestController
 public class UserController {
@@ -28,28 +28,37 @@ public class UserController {
     
     @PostMapping("/users")
     @ApiMessage("Create user success")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody User user) throws IdInvalidException {
         // ma hoa mat khau
+        if(this.userService.isEmailExist(user.getEmail())) {
+         throw new IdInvalidException("Email" + user.getEmail() + " this email is already use");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User khanhUser = userService.handleCreateUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(khanhUser);
+        this.userService.handleCreateUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToUserCreateDTO(user));
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
-        if(id >100){
-            throw new IdInvalidException("id phai nho hon 100");
+    @ApiMessage("Delete User success")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
+        if(this.userService.fetchUserById(id) == null) {
+            throw new IdInvalidException("User with the specified ID was not found");
         }
         this.userService.handleDeletUser(id);
 //        return ResponseEntity.status(HttpStatus.OK).body("deleted user with id =" +id);
         // cach viet ngan gon hon
 //        return ResponseEntity.ok( "deleted user with id = " + id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
-        return ResponseEntity.ok(this.userService.fetchUserById(id));
+    @ApiMessage("Fetch user by ID")
+    public ResponseEntity<UserCreateDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
+        User user = this.userService.fetchUserById(id);
+        if(user == null) {
+            throw new IdInvalidException("User with the specified ID was not found");
+        }
+        return ResponseEntity.ok(this.userService.convertToUserCreateDTO(user));
     }
 
     @GetMapping("/users")
@@ -67,7 +76,13 @@ public class UserController {
 
     @PutMapping("/users")
     @ApiMessage("Information has been updated")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.handleUpdateUser(user));
+    public ResponseEntity<UserUpdateDTO> updateUser(@RequestBody User user) throws IdInvalidException {
+        if(this.userService.fetchUserById(user.getId()) == null) {
+            throw new IdInvalidException("No user found with the provided email address: " + user.getEmail());
+        }
+        User updateUser = this.userService.handleUpdateUser(user);
+        this.userService.handleCreateUser(updateUser);
+        this.userService.convertToUserUpdateDTO(updateUser);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.convertToUserUpdateDTO(updateUser));
     }
 }

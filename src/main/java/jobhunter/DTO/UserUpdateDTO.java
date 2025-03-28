@@ -1,33 +1,20 @@
-package jobhunter.domain;
-
+package jobhunter.DTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jobhunter.util.SecutiryUtil;
 import jobhunter.util.constant.GenderEnum;
 
 import java.time.Instant;
 
-@Entity
-@Table(name ="users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
+public class UserUpdateDTO {
+    private long id;
     private String name;
-    @NotBlank(message = "Email cannot be empty")
     private String email;
-    @NotBlank(message = "Password cannot be empty")
-    private String password;
     private int age;
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
     private String address;
-    private String refreshToken;
-    private Instant createdAt;
     private Instant updatedAt;
     private String updatedBy;
-
 
     public String getName() {
         return name;
@@ -43,14 +30,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setId(Long id) {
@@ -89,21 +68,6 @@ public class User {
         this.address = address;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
     public Instant getUpdatedAt() {
         return updatedAt;
@@ -119,9 +83,5 @@ public class User {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
-    }
-    @PrePersist
-    public void beforeCreate() {
-        this.createdAt = Instant.now();
     }
 }
