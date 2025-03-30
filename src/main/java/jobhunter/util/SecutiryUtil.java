@@ -1,6 +1,6 @@
 package jobhunter.util;
 
-import com.nimbusds.jose.util.Base64;
+import jobhunter.DTO.ResLoginDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -27,18 +27,35 @@ public class SecutiryUtil {
     @Value("${phankhanh.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${phankhanh.jwt.token-validity-in-seconds}")
-    private long jwtExpiration;
+    @Value("${phankhanh.jwt.access-token-validity-in-seconds}")
+    private long accessJwtExpiration;
 
-    public String createToken(Authentication authentication) {
+    @Value("${phankhanh.jwt.refresh-token-validity-in-seconds}")
+    private long refreshJwtExpiration;
+
+    public String createAccessToken(Authentication authentication) {
         Instant now = Instant.now();
-        Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.accessJwtExpiration, ChronoUnit.SECONDS);
         // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
                 .claim("PhanKhanh", authentication)
+                .build();
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+    }
+
+    public String createRefreshToke(String email, ResLoginDTO resLoginDTO) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshJwtExpiration, ChronoUnit.SECONDS);
+        // @formatter:off
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuedAt(now)
+                .expiresAt(validity)
+                .subject(email)
+                .claim("PhanKhanh", resLoginDTO.getUserlogin())
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();

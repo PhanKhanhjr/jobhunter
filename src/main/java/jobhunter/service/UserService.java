@@ -2,17 +2,15 @@ package jobhunter.service;
 
 import jobhunter.DTO.Meta;
 import jobhunter.DTO.ResutlPaginationDTO;
-import jobhunter.DTO.UserCreateDTO;
+import jobhunter.DTO.UserResponseDTO;
 import jobhunter.DTO.UserUpdateDTO;
 import jobhunter.domain.User;
 import jobhunter.repository.UserRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,8 +51,8 @@ public class UserService {
        meta.setTotal(users.getTotalElements());
        paginationDTO.setMeta(meta);
 
-       List<UserCreateDTO> userList = users.getContent()
-               .stream().map(item -> new UserCreateDTO(
+       List<UserResponseDTO> userList = users.getContent()
+               .stream().map(item -> new UserResponseDTO(
                item.getId(),
                item.getName(),
                item.getEmail(),
@@ -69,18 +67,6 @@ public class UserService {
         return paginationDTO;
     }
 
-//    public User handleUpdateUser(User user) {
-//        User updateUser = this.fetchUserById(user.getId());
-//        if (updateUser != null) {
-//            updateUser.setName(user.getName());
-//            updateUser.setEmail(user.getEmail());
-//            updateUser.setPassword(user.getPassword());
-//            this.userRepository.save(updateUser);
-//            this.userRepository.save(updateUser);
-//        }
-//        return updateUser;
-//    }
-
     public User handleGetUserByEmail(String email) {
         return this.userRepository.findUserByEmail(email);
     }
@@ -88,16 +74,16 @@ public class UserService {
         return this.userRepository.existsByEmail(email);
     }
 
-    public UserCreateDTO convertToUserCreateDTO(User user) {
-        UserCreateDTO userCreateDTO = new UserCreateDTO();
-        userCreateDTO.setId(user.getId());
-        userCreateDTO.setName(user.getName());
-        userCreateDTO.setEmail(user.getEmail());
-        userCreateDTO.setCreatedAt(user.getCreatedAt());
-        userCreateDTO.setGender(user.getGender());
-        userCreateDTO.setAddress(user.getAddress());
-        userCreateDTO.setAge(user.getAge());
-        return userCreateDTO;
+    public UserResponseDTO convertToUserCreateDTO(User user) {
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setId(user.getId());
+        userResponseDTO.setName(user.getName());
+        userResponseDTO.setEmail(user.getEmail());
+        userResponseDTO.setCreatedAt(user.getCreatedAt());
+        userResponseDTO.setGender(user.getGender());
+        userResponseDTO.setAddress(user.getAddress());
+        userResponseDTO.setAge(user.getAge());
+        return userResponseDTO;
     }
 
     public UserUpdateDTO convertToUserUpdateDTO(User user) {
@@ -119,9 +105,15 @@ public class UserService {
         currentUser.setAge(user.getAge());
         currentUser.setGender(user.getGender());
         currentUser.setAddress(user.getAddress());
-        currentUser.setUpdatedAt(user.getUpdatedAt());
-        currentUser.setUpdatedBy(user.getUpdatedBy());
         return this.userRepository.save(currentUser);
+    }
+
+    public void updateRefreshToken(String token, String email) {
+        User currentUser = this.handleGetUserByEmail(email);
+        if (currentUser != null) {
+            currentUser.setRefreshToken(token);
+            this.userRepository.save(currentUser);
+        }
     }
 
 }

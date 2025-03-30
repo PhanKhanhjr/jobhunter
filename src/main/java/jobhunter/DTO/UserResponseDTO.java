@@ -1,14 +1,12 @@
 package jobhunter.DTO;
 
 import jakarta.persistence.*;
-import jobhunter.domain.User;
-import jobhunter.util.SecutiryUtil;
 import jobhunter.util.constant.GenderEnum;
 
 import java.time.Instant;
 
 
-public class UserCreateDTO {
+public class UserResponseDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -75,15 +73,11 @@ public class UserCreateDTO {
     public Instant getCreatedAt() {
         return createdAt;
     }
-    @PrePersist
-    public void beforeCreate() {
-        this.createdAt = Instant.now();
-    }
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public UserCreateDTO(long id, String name, String email, int age, GenderEnum gender, String address, Instant createdAt, Instant updatedAt) {
+    public UserResponseDTO(long id, String name, String email, int age, GenderEnum gender, String address, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -93,7 +87,7 @@ public class UserCreateDTO {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-    public UserCreateDTO() {}
+    public UserResponseDTO() {}
 }
 
 

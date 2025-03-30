@@ -3,7 +3,7 @@ package jobhunter.controller;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import jobhunter.DTO.ResutlPaginationDTO;
-import jobhunter.DTO.UserCreateDTO;
+import jobhunter.DTO.UserResponseDTO;
 import jobhunter.DTO.UserUpdateDTO;
 import jobhunter.domain.User;
 import jobhunter.service.UserService;
@@ -53,7 +53,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     @ApiMessage("Fetch user by ID")
-    public ResponseEntity<UserCreateDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
         User user = this.userService.fetchUserById(id);
         if(user == null) {
             throw new IdInvalidException("User with the specified ID was not found");

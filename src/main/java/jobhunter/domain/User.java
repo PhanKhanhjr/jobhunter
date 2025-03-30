@@ -23,11 +23,20 @@ public class User {
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
     private String address;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
     private Instant createdAt;
+    private String createdBy;
     private Instant updatedAt;
     private String updatedBy;
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public String getName() {
         return name;
@@ -120,8 +129,15 @@ public class User {
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
-    @PrePersist
+
     public void beforeCreate() {
         this.createdAt = Instant.now();
+        this.createdBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updatedBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        this.updatedAt = Instant.now();
     }
 }

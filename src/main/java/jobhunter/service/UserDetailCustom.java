@@ -20,6 +20,9 @@ public class UserDetailCustom implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         jobhunter.domain.User user = this.userService.handleGetUserByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("Username or password is incorrect");
+        }
         return new User(
                 user.getEmail(),
                 user.getPassword(),
