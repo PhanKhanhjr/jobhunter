@@ -22,7 +22,7 @@ public class Company {
     private String address;
     private String logo;
     //Convert time object to json(fontend)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

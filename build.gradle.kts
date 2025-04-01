@@ -29,6 +29,8 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	implementation("com.turkraft.springfilter:jpa:3.1.7")
+	compileOnly("org.projectlombok:lombok:1.18.38")
+	annotationProcessor("org.projectlombok:lombok:1.18.38")
 }
 
 tasks.withType<Test> {

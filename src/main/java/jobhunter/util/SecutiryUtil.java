@@ -1,5 +1,6 @@
 package jobhunter.util;
 
+import com.nimbusds.jose.util.Base64;
 import jobhunter.DTO.ResLoginDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -9,8 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -33,15 +39,19 @@ public class SecutiryUtil {
     @Value("${phankhanh.jwt.refresh-token-validity-in-seconds}")
     private long refreshJwtExpiration;
 
-    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin resLoginDTO) {
+    public String createAccessToken(String email, ResLoginDTO.UserLogin resLoginDTO) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessJwtExpiration, ChronoUnit.SECONDS);
         // @formatter:off
+        List<String> listPermission = new ArrayList<String>();
+        listPermission.add("ROLE_USER_CREATE");
+        listPermission.add("ROLE_USER_UPDATE");
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
-                .subject(authentication.getName())
+                .subject(email)
                 .claim("user", resLoginDTO)
+                .claim("permission", listPermission)
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
@@ -55,7 +65,7 @@ public class SecutiryUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email)
-                .claim("PhanKhanh", resLoginDTO.getUserlogin())
+                .claim("PhanKhanh", resLoginDTO.getUser())
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
@@ -77,6 +87,21 @@ public class SecutiryUtil {
             return s;
         }
         return null;
+    }
+
+    private SecretKey getSecretKey() {
+        byte[] keyBytes = Base64.from(jwtKey).decode();
+        return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
+    }
+
+    public Jwt checkValidRefreshToken(String token) {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(getSecretKey()).macAlgorithm(JWT_ALGORITHM).build();
+        try{
+             return jwtDecoder.decode(token);
+        }catch (Exception e){
+            System.out.println("Invalid Refresh Token");
+            throw e;
+        }
     }
 
     /**
