@@ -33,7 +33,7 @@ public class SecutiryUtil {
     @Value("${phankhanh.jwt.refresh-token-validity-in-seconds}")
     private long refreshJwtExpiration;
 
-    public String createAccessToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin resLoginDTO) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessJwtExpiration, ChronoUnit.SECONDS);
         // @formatter:off
@@ -41,7 +41,7 @@ public class SecutiryUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
-                .claim("PhanKhanh", authentication)
+                .claim("user", resLoginDTO)
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
