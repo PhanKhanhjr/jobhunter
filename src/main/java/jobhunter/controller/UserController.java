@@ -2,9 +2,9 @@ package jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import jobhunter.DTO.ResutlPaginationDTO;
-import jobhunter.DTO.UserResponseDTO;
-import jobhunter.DTO.UserUpdateDTO;
+import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.UserResponseDTO;
+import jobhunter.domain.response.UserUpdateDTO;
 import jobhunter.domain.User;
 import jobhunter.service.UserService;
 import jobhunter.util.anotation.ApiMessage;

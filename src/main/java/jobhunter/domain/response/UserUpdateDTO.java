@@ -1,4 +1,4 @@
-package jobhunter.DTO;
+package jobhunter.domain.response;
 import jakarta.persistence.*;
 import jobhunter.util.constant.GenderEnum;
 

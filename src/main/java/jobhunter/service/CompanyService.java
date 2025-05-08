@@ -1,8 +1,7 @@
 package jobhunter.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jobhunter.DTO.Meta;
-import jobhunter.DTO.ResutlPaginationDTO;
+import jobhunter.domain.response.ResutlPaginationDTO;
 import jobhunter.domain.Company;
 import jobhunter.repository.CompanyRepository;
 import org.springframework.data.domain.Page;
@@ -25,7 +24,7 @@ public class CompanyService {
     public ResutlPaginationDTO fetchAllCompanies(Specification<Company> spec,Pageable pageable) {
         Page<Company> companies =this.companyRepository.findAll(spec,pageable);
         ResutlPaginationDTO resutlPaginationDTO = new ResutlPaginationDTO();
-        Meta meta = new Meta();
+        ResutlPaginationDTO.Meta meta = new ResutlPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber()+1);
         meta.setPageSize(pageable.getPageSize());
         meta.setPages(companies.getTotalPages());

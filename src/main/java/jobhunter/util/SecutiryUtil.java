@@ -1,7 +1,7 @@
 package jobhunter.util;
 
 import com.nimbusds.jose.util.Base64;
-import jobhunter.DTO.ResLoginDTO;
+import jobhunter.domain.response.ResLoginDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

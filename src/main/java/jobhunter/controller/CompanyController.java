@@ -2,16 +2,15 @@ package jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import jobhunter.DTO.ResutlPaginationDTO;
+import jobhunter.domain.response.ResutlPaginationDTO;
 import jobhunter.domain.Company;
 import jobhunter.service.CompanyService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
+
 @RequestMapping("/api/v1")
 @RestController
 public class  CompanyController {

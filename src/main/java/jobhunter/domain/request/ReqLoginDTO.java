@@ -1,9 +1,9 @@
-package jobhunter.DTO;
+package jobhunter.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 
 //Data Transfer Object
-public class LoginDTO {
+public class ReqLoginDTO {
 
     @NotBlank(message = "Tài khoản không được để trống")
     private String username;

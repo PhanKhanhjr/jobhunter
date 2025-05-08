@@ -1,8 +1,8 @@
 package jobhunter.controller;
 
 import jakarta.validation.Valid;
-import jobhunter.DTO.LoginDTO;
-import jobhunter.DTO.ResLoginDTO;
+import jobhunter.domain.request.ReqLoginDTO;
+import jobhunter.domain.response.ResLoginDTO;
 import jobhunter.domain.User;
 import jobhunter.service.UserService;
 import jobhunter.util.SecutiryUtil;
@@ -34,7 +34,7 @@ public class AuthController {
     @Value("${phankhanh.jwt.refresh-token-validity-in-seconds}")
     private long refreshJwtExpiration;
     @PostMapping("/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
 

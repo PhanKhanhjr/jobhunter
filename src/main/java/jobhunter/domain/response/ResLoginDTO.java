@@ -1,4 +1,4 @@
-package jobhunter.DTO;
+package jobhunter.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
