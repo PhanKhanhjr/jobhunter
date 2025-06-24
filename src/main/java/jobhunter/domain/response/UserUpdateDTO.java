@@ -1,6 +1,8 @@
 package jobhunter.domain.response;
 import jakarta.persistence.*;
 import jobhunter.util.constant.GenderEnum;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 
@@ -15,6 +17,7 @@ public class UserUpdateDTO {
     private String address;
     private Instant updatedAt;
     private String updatedBy;
+    private UserResponseDTO.companyUser company;
 
     public String getName() {
         return name;
@@ -83,5 +86,13 @@ public class UserUpdateDTO {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public UserResponseDTO.companyUser getCompany() {
+        return company;
+    }
+
+    public void setCompany(UserResponseDTO.companyUser company) {
+        this.company = company;
     }
 }

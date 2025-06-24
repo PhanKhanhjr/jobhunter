@@ -1,5 +1,6 @@
 package jobhunter.service;
 
+import jobhunter.domain.Company;
 import jobhunter.domain.response.ResutlPaginationDTO;
 import jobhunter.domain.response.UserResponseDTO;
 import jobhunter.domain.response.UserUpdateDTO;
@@ -19,15 +20,22 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CompanyService companyService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CompanyService companyService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.companyService = companyService;
     }
 
     public User handleCreateUser(User user) {
-       return this.userRepository.save(user);
+        if(user.getCompany() != null) {
+            Optional<Company> companyOptional = this.companyService.getCompanyById(user.getCompany().getId());
+            user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
+        return this.userRepository.save(user);
     }
+
 
     public void handleDeletUser(long id) {
             this.userRepository.deleteById(id);
@@ -59,7 +67,12 @@ public class UserService {
                item.getGender(),
                item.getAddress(),
                item.getUpdatedAt(),
-               item.getCreatedAt())
+               item.getCreatedAt(),
+                       new UserResponseDTO.companyUser(
+                               item.getCompany() != null ? item.getCompany().getId() : null,
+                               item.getCompany() != null ? item.getCompany().getName() : null
+                       )
+            )
                )
                .collect(Collectors.toList());
         paginationDTO.setResult(userList);
@@ -75,6 +88,7 @@ public class UserService {
 
     public UserResponseDTO convertToUserCreateDTO(User user) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
+        UserResponseDTO.companyUser company = new UserResponseDTO.companyUser();
         userResponseDTO.setId(user.getId());
         userResponseDTO.setName(user.getName());
         userResponseDTO.setEmail(user.getEmail());
@@ -82,11 +96,23 @@ public class UserService {
         userResponseDTO.setGender(user.getGender());
         userResponseDTO.setAddress(user.getAddress());
         userResponseDTO.setAge(user.getAge());
+
+        if (user.getCompany() != null) {
+            company.setId(user.getCompany().getId());
+            company.setName(user.getCompany().getName());
+            userResponseDTO.setCompany(company);
+        }
         return userResponseDTO;
     }
 
     public UserUpdateDTO convertToUserUpdateDTO(User user) {
         UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+        UserResponseDTO.companyUser company = new UserResponseDTO.companyUser();
+        if (user.getCompany() != null) {
+            company.setId(user.getCompany().getId());
+            company.setName(user.getCompany().getName());
+            userUpdateDTO.setCompany(company);
+        }
         userUpdateDTO.setId(user.getId());
         userUpdateDTO.setName(user.getName());
         userUpdateDTO.setEmail(user.getEmail());
@@ -104,6 +130,11 @@ public class UserService {
         currentUser.setAge(user.getAge());
         currentUser.setGender(user.getGender());
         currentUser.setAddress(user.getAddress());
+
+        if (user.getCompany() != null) {
+            Optional<Company> companyOptional = this.companyService.getCompanyById(user.getCompany().getId());
+            currentUser.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
         return this.userRepository.save(currentUser);
     }
 

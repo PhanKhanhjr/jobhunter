@@ -21,10 +21,10 @@ import java.util.Optional;
 
 
 @Service
-public class SecutiryUtil {
+public class SecurityUtil {
 
     private JwtEncoder jwtEncoder;
-    public SecutiryUtil(JwtEncoder jwtEncoder) {
+    public SecurityUtil(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
     }
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;

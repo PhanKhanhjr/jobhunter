@@ -2,9 +2,8 @@ package jobhunter.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jobhunter.util.SecutiryUtil;
+import jobhunter.util.SecurityUtil;
 import jobhunter.util.constant.GenderEnum;
-
 import java.time.Instant;
 
 @Entity
@@ -29,6 +28,10 @@ public class User {
     private String createdBy;
     private Instant updatedAt;
     private String updatedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     public String getCreatedBy() {
         return createdBy;
@@ -130,14 +133,22 @@ public class User {
         this.updatedBy = updatedBy;
     }
 
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
     public void beforeCreate() {
         this.createdAt = Instant.now();
-        this.createdBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get() : "";
     }
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.updatedBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
     }
 }

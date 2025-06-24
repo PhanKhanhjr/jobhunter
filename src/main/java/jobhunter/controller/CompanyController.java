@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RequestMapping("/api/v1")
 @RestController
 public class  CompanyController {
@@ -40,13 +42,13 @@ public class  CompanyController {
     }
 
     @GetMapping("/companies/{id}")
-    public ResponseEntity<Company> findCompanyById(@PathVariable long id) {
+    public ResponseEntity<Optional<Company>> findCompanyById(@PathVariable long id) {
         return ResponseEntity.status(HttpStatus.FOUND).body(this.companyService.getCompanyById(id));
     }
 
     @DeleteMapping("/companies/{id}")
     public ResponseEntity<String> deleteCompanyById(@PathVariable long id) {
-        Company company = this.companyService.getCompanyById(id);
+        Optional<Company> company = this.companyService.getCompanyById(id);
         if (company == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found");
         }

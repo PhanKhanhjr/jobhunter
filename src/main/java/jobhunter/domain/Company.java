@@ -1,12 +1,12 @@
 package jobhunter.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jobhunter.util.SecutiryUtil;
-import org.apache.catalina.security.SecurityUtil;
+import jobhunter.util.SecurityUtil;
 
 import java.time.*;
+import java.util.List;
 
 @Entity
 @Table(name = "companies")
@@ -21,12 +21,19 @@ public class Company {
     private String description;
     private String address;
     private String logo;
-    //Convert time object to json(fontend)
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<User> users;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Job> jobs;
 
     public Instant getUpdatedAt() {
         return updatedAt;
@@ -103,12 +110,12 @@ public class Company {
     @PrePersist
     public void beforeCreate() {
         this.createdAt = Instant.now();
-        this.createdBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get() : "";
     }
     
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.updatedBy = SecutiryUtil.getCurrentUserLogin().isPresent() == true ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
     }
 }

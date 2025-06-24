@@ -5,7 +5,7 @@ import jobhunter.domain.request.ReqLoginDTO;
 import jobhunter.domain.response.ResLoginDTO;
 import jobhunter.domain.User;
 import jobhunter.service.UserService;
-import jobhunter.util.SecutiryUtil;
+import jobhunter.util.SecurityUtil;
 import jobhunter.util.anotation.ApiMessage;
 import jobhunter.util.error.IdInvalidException;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,11 +25,11 @@ public class AuthController {
 
     private AuthenticationManagerBuilder authenticationManagerBuilder;
     private UserService userService;
-    private SecutiryUtil secutiryUtil;
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, SecutiryUtil secutiryUtil) {
+    private SecurityUtil securityUtil;
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, UserService userService, SecurityUtil securityUtil) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userService = userService;
-        this.secutiryUtil = secutiryUtil;
+        this.securityUtil = securityUtil;
     }
     @Value("${phankhanh.jwt.refresh-token-validity-in-seconds}")
     private long refreshJwtExpiration;
@@ -49,12 +49,12 @@ public class AuthController {
         resLoginDTO.setUser(userLogin);
 
         //create access_token
-        String access_token = this.secutiryUtil.createAccessToken(authentication.getName(), resLoginDTO.getUser());
+        String access_token = this.securityUtil.createAccessToken(authentication.getName(), resLoginDTO.getUser());
 
 
         resLoginDTO.setAccessToken(access_token);
         //create refresh_token
-        String refress_token = this.secutiryUtil.createRefreshToke(loginDTO.getUsername(), resLoginDTO);
+        String refress_token = this.securityUtil.createRefreshToke(loginDTO.getUsername(), resLoginDTO);
 
         //set refresh_toke
         this.userService.updateRefreshToken(refress_token,currentUser.getEmail());
@@ -76,7 +76,7 @@ public class AuthController {
     @GetMapping("/auth/account")
     @ApiMessage("fetch account success")
     public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount() {
-        String email = SecutiryUtil.getCurrentUserLogin().isPresent() ? SecutiryUtil.getCurrentUserLogin().get() : "";
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         User currentUser = this.userService.handleGetUserByEmail(email);
         ResLoginDTO.UserLogin resLoginDTO = new ResLoginDTO.UserLogin();
         ResLoginDTO.UserGetAccount resGetAccount = new ResLoginDTO.UserGetAccount();
@@ -96,7 +96,7 @@ public class AuthController {
             throw new IdInvalidException("You don't have a refresh token in your cookies");
         }
         //check valid token
-        Jwt decodedToken = this.secutiryUtil.checkValidRefreshToken(refreshToken);
+        Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refreshToken);
         String email = decodedToken.getSubject();
         //check user by token and email
         User currentUser = this.userService.fetchUserByTokenAndEmail(refreshToken, email);
@@ -109,12 +109,12 @@ public class AuthController {
         resLoginDTO.setUser(userLogin);
 
         //create access_token
-        String access_token = this.secutiryUtil.createAccessToken(email, resLoginDTO.getUser());
+        String access_token = this.securityUtil.createAccessToken(email, resLoginDTO.getUser());
 
 
         resLoginDTO.setAccessToken(access_token);
         //create refresh_token
-        String new_refress_token = this.secutiryUtil.createRefreshToke(email, resLoginDTO);
+        String new_refress_token = this.securityUtil.createRefreshToke(email, resLoginDTO);
 
         //set refresh_toke
         this.userService.updateRefreshToken(new_refress_token,currentUserDB.getEmail());

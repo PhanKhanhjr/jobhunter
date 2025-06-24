@@ -1,20 +1,26 @@
 package jobhunter.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jobhunter.domain.User;
 import jobhunter.domain.response.ResutlPaginationDTO;
 import jobhunter.domain.Company;
 import jobhunter.repository.CompanyRepository;
+import jobhunter.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CompanyService {
     private CompanyRepository companyRepository;
-    public CompanyService(CompanyRepository companyRepository) {
+    private UserRepository userRepository;
+    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository) {
         this.companyRepository = companyRepository;
+        this.userRepository = userRepository;
     }
 
     public Company handleCreateCompany(Company company) {
@@ -35,10 +41,19 @@ public class CompanyService {
         return resutlPaginationDTO;
     }
 
-    public Company getCompanyById(long id) {
-        return this.companyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Company not found"));
+    public Optional<Company> getCompanyById(long id) {
+        return this.companyRepository.findById(id)
+                .or(() -> {
+                    throw new EntityNotFoundException("Company not found with id: " + id);
+                });
     }
     public void deleteCompanyById(long id) {
+        Optional<Company> companyOptional= this.companyRepository.findById(id);
+        if (companyOptional.isPresent()) {
+            Company com = companyOptional.get();
+            List<User> users = this.userRepository.findByCompany(com);
+            this.userRepository.deleteAll(users);
+        }
         this.companyRepository.deleteById(id);
     }
 
