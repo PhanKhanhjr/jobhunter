@@ -21,8 +21,8 @@ public class Job {
     private long id;
     private String name;
     private String location;
-    private String salary;
-    private String quantity;
+    private double salary;
+    private int quantity;
     private LevelEnum level;
 
     @Column(columnDefinition = "MEDIUMTEXT")
