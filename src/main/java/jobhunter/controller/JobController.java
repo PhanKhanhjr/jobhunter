@@ -18,20 +18,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RequestMapping("/api/v1")
+@RestController
 public class JobController {
     private final JobService jobService;
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }
 
-    @PostMapping
+    @PostMapping("/jobs")
     @ApiMessage("create a new job")
     public ResponseEntity<ResCreateJobDTO> create(@Valid @RequestBody Job job) {
         return ResponseEntity.status(HttpStatus.CREATED).body(jobService.createJob(job));
     }
 
-    @PutMapping
+    @PutMapping("/jobs")
     @ApiMessage("update a job")
     public ResponseEntity<ResUpdateJobDTO> update(@Valid @RequestBody Job job) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchById(job.getId());
@@ -41,7 +42,7 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.OK).body(jobService.updateJob(job));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/jobs/{id}")
     @ApiMessage("delete a job")
     public ResponseEntity<Void> delete(@PathVariable Long id) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchById(id);
@@ -52,7 +53,7 @@ public class JobController {
         return ResponseEntity.ok().body(null);
     }
 
-    @GetMapping("/job/{id}")
+    @GetMapping("/jobs/{id}")
     public ResponseEntity<Job> getJob(@PathVariable Long id) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchById(id);
         if (!currentJob.isPresent()) {
