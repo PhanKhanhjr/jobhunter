@@ -1,7 +1,7 @@
 package jobhunter.service;
 
 import jobhunter.domain.Company;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.domain.response.UserResponseDTO;
 import jobhunter.domain.response.UserUpdateDTO;
 import jobhunter.domain.User;
@@ -48,10 +48,10 @@ public class UserService {
         }
         return null;
     }
-    public ResutlPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
+    public ResultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
        Page<User> users = this.userRepository.findAll(spec, pageable);
-       ResutlPaginationDTO paginationDTO = new ResutlPaginationDTO();
-       ResutlPaginationDTO.Meta meta = new ResutlPaginationDTO.Meta();
+       ResultPaginationDTO paginationDTO = new ResultPaginationDTO();
+       ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
        meta.setPage(pageable.getPageNumber()+1);
        meta.setPageSize(pageable.getPageSize());
        meta.setPages(users.getTotalPages());

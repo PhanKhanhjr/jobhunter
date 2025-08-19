@@ -2,7 +2,7 @@ package jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.domain.response.UserResponseDTO;
 import jobhunter.domain.response.UserUpdateDTO;
 import jobhunter.domain.User;
@@ -63,7 +63,7 @@ public class UserController {
 
     @GetMapping("/users")
     @ApiMessage("Get user success")
-    public  ResponseEntity<ResutlPaginationDTO> getAllUsers(
+    public  ResponseEntity<ResultPaginationDTO> getAllUsers(
 //            @RequestParam("current") Optional<String> currentOptional,
 //            @RequestParam("pageSize") Optional<String> pageSizeOptional
             @Filter Specification<User> spec, Pageable pageable

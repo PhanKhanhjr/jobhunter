@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import jobhunter.domain.Job;
 import jobhunter.domain.response.ResCreateJobDTO;
 import jobhunter.domain.response.ResUpdateJobDTO;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.service.JobService;
 import jobhunter.util.anotation.ApiMessage;
 import jobhunter.util.error.IdInvalidException;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -64,7 +63,7 @@ public class JobController {
 
     @GetMapping("/jobs")
     @ApiMessage("get job with pagination")
-    public ResponseEntity<ResutlPaginationDTO> getAllJob (@Filter Specification<Job> spec, Pageable pageable) {
+    public ResponseEntity<ResultPaginationDTO> getAllJob (@Filter Specification<Job> spec, Pageable pageable) {
         return ResponseEntity.ok().body(this.jobService.fetchAllJob(spec, pageable));
     }
 }

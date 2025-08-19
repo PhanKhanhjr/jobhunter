@@ -1,7 +1,7 @@
 package jobhunter.service;
 
 import jobhunter.domain.Skill;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.repository.SkillRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,10 +37,10 @@ public class SkillService {
         return this.skillRepository.save(s);
     }
 
-    public ResutlPaginationDTO fetchAllSkills(Specification <Skill> spec, Pageable pageable) {
+    public ResultPaginationDTO fetchAllSkills(Specification <Skill> spec, Pageable pageable) {
         Page<Skill> pageUser = this.skillRepository.findAll(spec, pageable);
-        ResutlPaginationDTO rs = new ResutlPaginationDTO();
-        ResutlPaginationDTO.Meta meta = new ResutlPaginationDTO.Meta();
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
 
         meta.setPage(pageable.getPageNumber()+1);
         meta.setPageSize(pageable.getPageSize());

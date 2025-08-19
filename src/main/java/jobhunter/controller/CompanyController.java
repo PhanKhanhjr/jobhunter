@@ -2,7 +2,7 @@ package jobhunter.controller;
 
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.domain.Company;
 import jobhunter.service.CompanyService;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +30,7 @@ public class  CompanyController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<ResutlPaginationDTO> fetchCompanies(
+    public ResponseEntity<ResultPaginationDTO> fetchCompanies(
 //            @RequestParam("current") Optional<String> currentOptional,
 //            @RequestParam("pageSize") Optional<String> pageSizeOptional
             @Filter Specification<Company> spec, Pageable pageable)

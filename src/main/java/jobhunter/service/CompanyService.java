@@ -2,7 +2,7 @@ package jobhunter.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jobhunter.domain.User;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.domain.Company;
 import jobhunter.repository.CompanyRepository;
 import jobhunter.repository.UserRepository;
@@ -27,18 +27,18 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public ResutlPaginationDTO fetchAllCompanies(Specification<Company> spec,Pageable pageable) {
+    public ResultPaginationDTO fetchAllCompanies(Specification<Company> spec, Pageable pageable) {
         Page<Company> companies =this.companyRepository.findAll(spec,pageable);
-        ResutlPaginationDTO resutlPaginationDTO = new ResutlPaginationDTO();
-        ResutlPaginationDTO.Meta meta = new ResutlPaginationDTO.Meta();
+        ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber()+1);
         meta.setPageSize(pageable.getPageSize());
         meta.setPages(companies.getTotalPages());
         meta.setTotal(companies.getTotalElements());
 
-        resutlPaginationDTO.setMeta(meta);
-        resutlPaginationDTO.setResult(companies.getContent());
-        return resutlPaginationDTO;
+        resultPaginationDTO.setMeta(meta);
+        resultPaginationDTO.setResult(companies.getContent());
+        return resultPaginationDTO;
     }
 
     public Optional<Company> getCompanyById(long id) {

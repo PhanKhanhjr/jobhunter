@@ -3,7 +3,7 @@ package jobhunter.controller;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import jobhunter.domain.Skill;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.service.SkillService;
 import jobhunter.util.anotation.ApiMessage;
 import jobhunter.util.error.IdInvalidException;
@@ -50,7 +50,7 @@ public class SkillController {
 
     @GetMapping("/skills")
     @ApiMessage("fetch all skills")
-    public ResponseEntity<ResutlPaginationDTO> getAll(@Filter Specification<Skill> spec, Pageable pageable) {
+    public ResponseEntity<ResultPaginationDTO> getAll(@Filter Specification<Skill> spec, Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.skillService.fetchAllSkills(spec, pageable));
     }
 

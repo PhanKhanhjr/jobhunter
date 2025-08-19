@@ -4,7 +4,7 @@ import jobhunter.domain.Job;
 import jobhunter.domain.Skill;
 import jobhunter.domain.response.ResCreateJobDTO;
 import jobhunter.domain.response.ResUpdateJobDTO;
-import jobhunter.domain.response.ResutlPaginationDTO;
+import jobhunter.domain.response.ResultPaginationDTO;
 import jobhunter.repository.JobRepository;
 import jobhunter.repository.SkillRepository;
 import org.springframework.data.domain.Page;
@@ -100,10 +100,10 @@ public class JobService {
         this.jobRepository.deleteById(id);
   }
 
-  public ResutlPaginationDTO fetchAllJob(Specification<Job> spec, Pageable pageable) {
+  public ResultPaginationDTO fetchAllJob(Specification<Job> spec, Pageable pageable) {
       Page<Job> page = this.jobRepository.findAll(spec, pageable);
-      ResutlPaginationDTO rs = new ResutlPaginationDTO();
-      ResutlPaginationDTO.Meta mt = new ResutlPaginationDTO.Meta();
+      ResultPaginationDTO rs = new ResultPaginationDTO();
+      ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
       mt.setPage(pageable.getPageNumber() +1);
       mt.setPages(pageable.getPageSize());
